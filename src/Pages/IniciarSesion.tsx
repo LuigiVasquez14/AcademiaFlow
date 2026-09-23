@@ -2,6 +2,7 @@ import { useState, type ChangeEvent } from 'react';
 import {Eye, EyeOff} from "lucide-react"
 // import React from 'react'
 import type { DatosInicioSesion } from '../Types/DatosInicioSesion';
+import { BarraLateral } from '../Components/BarraLateral';
 
 // import { error } from 'console';
 
@@ -40,6 +41,8 @@ export function IniciarSesion({AlEnviar}: PropiedadesIniciarSesion) {
     }
 
     return (
+
+        
         <form onSubmit={manejarEnvio} className='flex flex-col gap-4'>
             {error && (
                 <p className='rounded-[4px] border border-[#F8B4B4] bg-[#FDF2F2] px-3 py-2 text-[12px] text-[#9B2C2C]'>{error}</p> 

@@ -1,20 +1,32 @@
-import type { DatosInicioSesion } from './Types/DatosInicioSesion';
-import { IniciarSesion } from './Pages/IniciarSesion';
+import React from 'react';
+import { BarraLateral } from './Components/BarraLateral';
 
 function App() {
-  async function manejarInicioSesion(valores: DatosInicioSesion) {
-    // TODO: conectar con Supabase / la Web API en C#.
-    console.log('Inicio de sesión:', valores);
-  }
+  const manejarCambioRuta = (ruta: string) => {
+    console.log('Navegando a la ruta:', ruta);
+    // Aquí puedes manejar la lógica de enrutamiento o cambiar de vista
+  };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FBF9F5] px-6">
-      <div className="w-full max-w-[400px] rounded-[6px] border border-[#E8E1D5] bg-white p-7">
-        <h1 className="mb-6 font-serif text-2xl font-semibold text-[#2B2621]">
-          Iniciar sesión
-        </h1>
-        <IniciarSesion AlEnviar={manejarInicioSesion} />
-      </div>
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Barra lateral izquierda */}
+      <BarraLateral 
+        rutaInicial="proyectos" 
+        alCambiarRuta={manejarCambioRuta} 
+      />
+
+      {/* Contenido principal de la aplicación (Simulando la vista de la imagen) */}
+      <main className="flex-1 p-8 overflow-y-auto">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Proyectos</h1>
+          <p className="text-sm text-gray-500 mb-6">Catálogo institucional - 38 proyectos registrados - 24 activos</p>
+          
+          {/* Aquí irá el contenido de la tabla o las tarjetas que haremos en el siguiente paso */}
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <p className="text-gray-600">Espacio de trabajo principal listo para conectar los componentes de la interfaz.</p>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
