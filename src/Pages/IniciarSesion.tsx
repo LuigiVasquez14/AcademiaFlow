@@ -2,7 +2,6 @@ import { useState, type ChangeEvent } from 'react';
 import {Eye, EyeOff} from "lucide-react"
 // import React from 'react'
 import type { DatosInicioSesion } from '../Types/DatosInicioSesion';
-import { BarraLateral } from '../Components/BarraLateral';
 
 // import { error } from 'console';
 

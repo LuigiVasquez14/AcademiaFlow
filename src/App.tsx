@@ -1,32 +1,88 @@
-import React from 'react';
+import { useState } from 'react';
+import { LoginPage } from './Pages/LoginPage';
 import { BarraLateral } from './Components/BarraLateral';
+import type { DatosInicioSesion, UsuarioAutenticado } from './Types/DatosInicioSesion';
 
-function App() {
-  const manejarCambioRuta = (ruta: string) => {
-    console.log('Navegando a la ruta:', ruta);
-    // Aquí puedes manejar la lógica de enrutamiento o cambiar de vista
+export function App() {
+  // Estado para controlar si el usuario ha iniciado sesión
+  const [estaAutenticado, setEstaAutenticado] = useState<boolean>(false);
+  
+  // Datos del usuario logueado en frontend
+  const [usuario, setUsuario] = useState<UsuarioAutenticado | null>(null);
+
+  // Sección actual de navegación
+  const [seccionActiva, setSeccionActiva] = useState<string>('proyectos');
+
+  // Función para manejar el inicio de sesión con credenciales
+  const manejarInicioSesion = (datos: DatosInicioSesion) => {
+    // Generar un nombre a partir del correo o usar el líder por defecto
+    const nombreExtraido = datos.Correo.includes('@') 
+      ? datos.Correo.split('@')[0].replace('.', ' ')
+      : 'Luigi Vásquez';
+
+    const nombreFormateado = nombreExtraido
+      .split(' ')
+      .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(' ');
+
+    const iniciales = nombreFormateado
+      .split(' ')
+      .map(p => p.charAt(0))
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() || 'LV';
+
+    setUsuario({
+      nombre: nombreFormateado || 'Luigi Vásquez',
+      rol: 'Líder de Proyecto',
+      correo: datos.Correo,
+      iniciales: iniciales,
+    });
+
+    setEstaAutenticado(true);
   };
 
+  // Función para entrar directamente como invitado
+  const manejarEntrarInvitado = () => {
+    setUsuario({
+      nombre: 'Usuario Invitado',
+      rol: 'Visitante Académico',
+      correo: 'invitado@academiaflow.edu',
+      iniciales: 'IN',
+      esInvitado: true,
+    });
+    setEstaAutenticado(true);
+  };
+
+  // Función para cerrar sesión y volver a la pantalla de login
+  const manejarCerrarSesion = () => {
+    setEstaAutenticado(false);
+    setUsuario(null);
+    setSeccionActiva('proyectos');
+  };
+
+  // 1. Si NO está autenticado, renderizar la pantalla de Login
+  if (!estaAutenticado) {
+    return (
+      <LoginPage
+        alIniciarSesion={manejarInicioSesion}
+        alEntrarInvitado={manejarEntrarInvitado}
+      />
+    );
+  }
+
+  // 2. Si ESTÁ autenticado, renderizar la interfaz principal del sistema
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Barra lateral izquierda */}
-      <BarraLateral 
-        rutaInicial="proyectos" 
-        alCambiarRuta={manejarCambioRuta} 
+    <div className="flex h-screen w-screen overflow-hidden bg-gray-50">
+      {/* Barra lateral de navegación */}
+      <BarraLateral
+        rutaActiva={seccionActiva}
+        alCambiarRuta={(ruta) => setSeccionActiva(ruta)}
+        usuario={usuario}
+        alCerrarSesion={manejarCerrarSesion}
       />
 
-      {/* Contenido principal de la aplicación (Simulando la vista de la imagen) */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Proyectos</h1>
-          <p className="text-sm text-gray-500 mb-6">Catálogo institucional - 38 proyectos registrados - 24 activos</p>
-          
-          {/* Aquí irá el contenido de la tabla o las tarjetas que haremos en el siguiente paso */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <p className="text-gray-600">Espacio de trabajo principal listo para conectar los componentes de la interfaz.</p>
-          </div>
-        </div>
-      </main>
+     
     </div>
   );
 }
