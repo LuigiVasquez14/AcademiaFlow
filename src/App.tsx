@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { LoginPage } from './Pages/LoginPage';
+// import { LoginPage } from './Pages/LoginPage';
 import { BarraLateral } from './Components/BarraLateral';
 import type { DatosInicioSesion, UsuarioAutenticado } from './Types/DatosInicioSesion';
+import { LoginPage } from './Pages/LoginPage';
 
 export function App() {
   // Estado para controlar si el usuario ha iniciado sesión
@@ -61,19 +62,21 @@ export function App() {
     setSeccionActiva('proyectos');
   };
 
-  // 1. Si NO está autenticado, renderizar la pantalla de Login
+  // 1. Si NO está autenticado, renderizar la pantalla de Login con el contenedor unificado
   if (!estaAutenticado) {
     return (
-      <LoginPage
-        alIniciarSesion={manejarInicioSesion}
-        alEntrarInvitado={manejarEntrarInvitado}
-      />
+      <div className="min-h-screen w-screen bg-white dark:bg-[#101828] flex items-center justify-center transition-colors duration-300">
+        <LoginPage
+          alIniciarSesion={manejarInicioSesion}
+          alEntrarInvitado={manejarEntrarInvitado}
+        />
+      </div>
     );
   }
 
   // 2. Si ESTÁ autenticado, renderizar la interfaz principal del sistema
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen w-screen overflow-hidden bg-white dark:bg-[#101828] text-gray-900 dark:text-[#F9FAFB] transition-colors duration-300">
       {/* Barra lateral de navegación */}
       <BarraLateral
         rutaActiva={seccionActiva}
@@ -81,8 +84,6 @@ export function App() {
         usuario={usuario}
         alCerrarSesion={manejarCerrarSesion}
       />
-
-     
     </div>
   );
 }
