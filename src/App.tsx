@@ -1,13 +1,33 @@
 import { useState } from 'react';
-// import { LoginPage } from './Pages/LoginPage';
 import { BarraLateral } from './Components/BarraLateral';
 import type { DatosInicioSesion, UsuarioAutenticado } from './Types/DatosInicioSesion';
-import { LoginPage } from './Pages/LoginPage';
+import { LoginPage } from './Pages/CrearSesion';
+import { Dashboard } from './Pages/Dashboard';
+import { Proyectos } from './Pages/Proyectos';
+import { NuevoProyecto } from './Pages/NuevoProyecto';
+import { Verificaciones } from './Pages/Verificaciones';
+
+// Vista de relleno para lo que todavía no está construido (Configuración/API).
+function VistaEnConstruccion({ titulo }: { titulo: string }) {
+    return (
+        <div className="flex h-full w-full items-center justify-center bg-white dark:bg-[#101828] p-8 transition-colors duration-300">
+            <div className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 dark:border-[#1D2939] bg-white dark:bg-[#171F2F] px-10 py-8 text-center shadow-sm">
+                <p className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-[#465FFF]">
+                    Próximamente
+                </p>
+                <h2 className="text-[20px] font-bold text-gray-900 dark:text-[#F9FAFB]">{titulo}</h2>
+                <p className="max-w-[320px] text-[12.5px] text-gray-500 dark:text-gray-400">
+                    Esta sección todavía no está conectada al backend.
+                </p>
+            </div>
+        </div>
+    );
+}
 
 export function App() {
   // Estado para controlar si el usuario ha iniciado sesión
   const [estaAutenticado, setEstaAutenticado] = useState<boolean>(false);
-  
+
   // Datos del usuario logueado en frontend
   const [usuario, setUsuario] = useState<UsuarioAutenticado | null>(null);
 
@@ -84,6 +104,22 @@ export function App() {
         usuario={usuario}
         alCerrarSesion={manejarCerrarSesion}
       />
+
+      {/* Contenido: cambia según la sección activa del sidebar */}
+      <main className="flex-1 overflow-hidden">
+        {seccionActiva === 'panelControl' && <Dashboard idUsuario={1} />}
+        {seccionActiva === 'proyectos' && (
+          <Proyectos alCrearProyecto={() => setSeccionActiva('nuevoProyecto')} />
+        )}
+        {seccionActiva === 'nuevoProyecto' && (
+          <NuevoProyecto
+            alCrear={() => setSeccionActiva('proyectos')}
+            alCancelar={() => setSeccionActiva('proyectos')}
+          />
+        )}
+        {seccionActiva === 'verificaciones' && <Verificaciones />}
+        {seccionActiva === 'configuracionApi' && <VistaEnConstruccion titulo="Configuración / API" />}
+      </main>
     </div>
   );
 }
