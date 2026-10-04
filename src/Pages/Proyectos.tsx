@@ -30,9 +30,10 @@ function formatearPresupuesto(monto?: number | null, moneda?: string | null) {
 
 interface PropiedadesProyectos {
     alCrearProyecto?: () => void;
+    alVerTablero?: (idProyecto: number) => void;
 }
 
-export function Proyectos({ alCrearProyecto }: PropiedadesProyectos) {
+export function Proyectos({ alCrearProyecto, alVerTablero }: PropiedadesProyectos) {
 
     const [proyectos, setProyectos] = useState<ProyectoViewModel[]>([]);
     const [cargando, setCargando] = useState(true);
@@ -143,11 +144,12 @@ export function Proyectos({ alCrearProyecto }: PropiedadesProyectos) {
                                 <th className="px-4 py-3">Presupuesto</th>
                                 <th className="px-4 py-3">Progreso</th>
                                 <th className="px-4 py-3">Estado</th>
+                                <th className="px-4 py-3 text-right">Tablero</th>
                             </tr>
                         </thead>
                         <tbody>
                             {proyectosFiltrados.map((proyecto) => (
-                                <tr key={proyecto.id} className="border-b border-gray-100 dark:border-[#1D2939] last:border-b-0 hover:bg-gray-50 dark:hover:bg-[#1D2939]/40">
+                                <tr key={proyecto.id} className="border-b border-gray-100 dark:border-[#1D2939] last:border-b-0 hover:bg-gray-50 dark:hover:bg-[#1D2939]/40 transition">
                                     <td className="px-4 py-3 font-mono text-[12px] text-indigo-600 dark:text-[#465FFF]">{proyecto.codigo}</td>
                                     <td className="px-4 py-3 font-medium text-gray-900 dark:text-[#F9FAFB]">{proyecto.nombre}</td>
                                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{proyecto.nombreLider}</td>
@@ -170,6 +172,15 @@ export function Proyectos({ alCrearProyecto }: PropiedadesProyectos) {
                                     </td>
                                     <td className="px-4 py-3">
                                         <Badge estado={proyecto.estado} />
+                                    </td>
+                                    <td className="px-4 py-3 text-right">
+                                        <button
+                                            type="button"
+                                            onClick={() => alVerTablero && alVerTablero(proyecto.id)}
+                                            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 text-xs font-semibold text-indigo-700 dark:text-[#465FFF] hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition cursor-pointer"
+                                        >
+                                            <span>Tareas (Trello)</span>
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

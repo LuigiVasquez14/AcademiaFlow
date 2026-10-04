@@ -3,10 +3,16 @@ import { Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
 import type { DatosInicioSesion } from '../../Types/DatosInicioSesion';
 
 interface LoginFormProps {
-  alIniciarSesion?: (datos: DatosInicioSesion) => void;
+  alIniciarSesion?: (datos: DatosInicioSesion) => Promise<void>;
+  alIrARegistro?: () => void;
+  alIrARecuperar?: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ alIniciarSesion }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ 
+  alIniciarSesion,
+  alIrARegistro,
+  alIrARecuperar,
+}) => {
   const [correo, setCorreo] = useState('');
   const [contraseña, setContraseña] = useState('');
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
@@ -14,26 +20,29 @@ export const LoginForm: React.FC<LoginFormProps> = ({ alIniciarSesion }) => {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState('');
 
-  const manejarEnvio = (e: React.FormEvent) => {
+  const manejarEnvio = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!correo.trim() || !contraseña.trim()) {
-      setError('Por favor ingresa tu correo/documento y contraseña.');
+      setError('Por favor ingresa tu correo y contraseña.');
       return;
     }
 
     setError('');
     setCargando(true);
 
-    setTimeout(() => {
-      setCargando(false);
+    try {
       if (alIniciarSesion) {
-        alIniciarSesion({
+        await alIniciarSesion({
           Correo: correo,
           Contraseña: contraseña,
           RecordarSesion: recordarSesion,
         });
       }
-    }, 400);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Correo o contraseña incorrectos.');
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
@@ -44,10 +53,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ alIniciarSesion }) => {
           Iniciar Sesión
         </h1>
         <p className="text-xs text-gray-500 dark:text-[#98A2B3]">
-          ¿Eres visitante?{' '}
-          <a href="#registro" className="text-[#465FFF] font-semibold hover:underline hover:text-[#394DD1] transition-colors">
-            Haz tu registro aquí.
-          </a>
+          ¿Eres nuevo o visitante?{' '}
+          <button
+            type="button"
+            onClick={alIrARegistro}
+            className="text-[#465FFF] font-semibold hover:underline hover:text-[#394DD1] transition-colors cursor-pointer"
+          >
+            Crear cuenta aquí.
+          </button>
         </p>
       </div>
 
@@ -82,9 +95,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ alIniciarSesion }) => {
             <label htmlFor="password" className="text-xs font-medium text-gray-700 dark:text-[#F9FAFB]">
               Contraseña
             </label>
-            <a href="#forgot" className="text-xs text-[#465FFF] font-semibold hover:underline hover:text-[#394DD1] transition-colors">
+            <button
+              type="button"
+              onClick={alIrARecuperar}
+              className="text-xs text-[#465FFF] font-semibold hover:underline hover:text-[#394DD1] transition-colors cursor-pointer"
+            >
               ¿Olvidaste tu contraseña?
-            </a>
+            </button>
           </div>
           <div className="relative">
             <input

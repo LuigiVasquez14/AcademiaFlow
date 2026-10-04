@@ -80,7 +80,9 @@ export function NuevoProyecto({ alCrear, alCancelar }: PropiedadesNuevoProyecto)
                     objetivoGeneral: objetivoGeneral || null,
                     palabrasClave: palabrasClave || null,
                     idInstitucion: Number(idInstitucion),
+                    nombreInstitucion: "",
                     idLider: Number(idLider),
+                    nombreLider: "",
                     estado: "Iniciado",
                     origenFinanciamiento,
                     presupuestoTotal: presupuestoTotal ? Number(presupuestoTotal) : 0,
@@ -92,7 +94,11 @@ export function NuevoProyecto({ alCrear, alCancelar }: PropiedadesNuevoProyecto)
 
             if (!respuesta.ok) {
                 const cuerpo = await respuesta.json().catch(() => null);
-                throw new Error(cuerpo?.mensaje ?? `El servidor respondió ${respuesta.status}`);
+                let msg = cuerpo?.mensaje;
+                if (!msg && cuerpo?.errors) {
+                    msg = Object.values(cuerpo.errors).flat().join("; ");
+                }
+                throw new Error(msg ?? cuerpo?.title ?? `El servidor respondió ${respuesta.status}`);
             }
 
             alCrear?.();
